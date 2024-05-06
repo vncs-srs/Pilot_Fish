@@ -2,10 +2,10 @@ import RPi.GPIO as GPIO
 from Carrinho_Peixe.Codigos.Teste_Ajustes.motor import Motor
 import time
 
-pino_motor_1_E = 11
-pino_motor_2_E = 12
-pino_motor_1_D = 6
-pino_motor_2_D = 7
+pino_motor_1_E = 17
+pino_motor_2_E = 27
+pino_motor_1_D = 23
+pino_motor_2_D = 24
 
 motor_direito = Motor(pino_motor_1_D, pino_motor_2_D)
 motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E)
