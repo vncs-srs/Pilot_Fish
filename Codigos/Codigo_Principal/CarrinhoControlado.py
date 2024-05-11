@@ -1,6 +1,6 @@
 import cv2
 from Rastreamento_Peixe import Rastreamento_Peixe
-from Pilot_Fish.Codigos.Teste_Ajustes.motor import Motor
+from motor import Motor
 from Controle_Rodas import pino_motor_1_D 
 from Controle_Rodas import pino_motor_2_D 
 from Controle_Rodas import pino_motor_1_E

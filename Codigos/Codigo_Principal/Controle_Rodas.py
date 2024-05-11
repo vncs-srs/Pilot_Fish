@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from Pilot_Fish.Codigos.Teste_Ajustes.motor import Motor
+from motor import Motor
 import time
 
 pino_motor_1_E = 17
