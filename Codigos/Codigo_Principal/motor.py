@@ -1,3 +1,4 @@
+import RPi.GPIO as GPIO
 class Motor:
     def __init__(self, p1, p2):
         self.pino_1 = p1
