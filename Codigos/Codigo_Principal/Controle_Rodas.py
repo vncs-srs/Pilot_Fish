@@ -7,6 +7,9 @@ pino_motor_2_E = 27
 pino_motor_1_D = 23
 pino_motor_2_D = 24
 
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
 motor_direito = Motor(pino_motor_1_D, pino_motor_2_D)
 motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E)
 
