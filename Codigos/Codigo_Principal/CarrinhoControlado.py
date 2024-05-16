@@ -1,23 +1,17 @@
 import cv2
 from Rastreamento_Peixe import Rastreamento_Peixe
-from motor import Motor
-from Controle_Rodas import pino_motor_1_D 
-from Controle_Rodas import pino_motor_2_D 
-from Controle_Rodas import pino_motor_1_E
-from Controle_Rodas import pino_motor_2_E  
+from Controle_Rodas import ControleRodas
 
 class CarrinhoControlado:
     def __init__(self):
         self.rastreador = Rastreamento_Peixe()
-        self.motor_direito = Motor(pino_motor_1_D, pino_motor_2_D)
-        self.motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E)
 
     def controlar_carrinho(self, x_Central, y_Central, w_Frame, h_Frame):
         # Definir a lógica para controlar o carrinho com base na posição do objeto rastreado
         if x_Central < w_Frame / 3:
-            self.Esquerda_vira()
+            self.Esquerda()
         elif x_Central > 2 * w_Frame / 3:
-            self.Direita_vira()
+            self.Direita()
         else:
             self.Frente()
 

@@ -13,52 +13,53 @@ GPIO.setmode(GPIO.BCM)
 motor_direito = Motor(pino_motor_1_D, pino_motor_2_D)
 motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E)
 
-def Direita():
-    print("Virando para direita")
-    motor_direito.frente()
-    motor_esquerdo.re()
+class ControleRodas:
+    def Direita():
+        print("Virando para direita")
+        motor_direito.frente()
+        motor_esquerdo.re()
 
-def Esquerda():
-    print("Virando para esquerda")
-    motor_direito.re()
-    motor_esquerdo.frente()
+    def Esquerda():
+        print("Virando para esquerda")
+        motor_direito.re()
+        motor_esquerdo.frente()
 
-def Frente():
-    print("Andando para frente")
-    motor_direito.frente()
-    motor_esquerdo.frente()
+    def Frente():
+        print("Andando para frente")
+        motor_direito.frente()
+        motor_esquerdo.frente()
 
-def Re():
-    print("Dando re")
-    motor_direito.re()
-    motor_esquerdo.re()
+    def Re():
+        print("Dando re")
+        motor_direito.re()
+        motor_esquerdo.re()
 
-def Parar():
-    print("Parando")
-    motor_direito.parar()
-    motor_esquerdo.parar()
+    def Parar():
+        print("Parando")
+        motor_direito.parar()
+        motor_esquerdo.parar()
 
-def Freiar():
-    print("Freiando")
-    motor_direito.freiar()
-    motor_esquerdo.freiar()
+    def Freiar():
+        print("Freiando")
+        motor_direito.freiar()
+        motor_esquerdo.freiar()
 
-try:
-    while True:
-         Frente()
-         time.sleep(5)
-        
-         Direita()
-         time.sleep(5)
-        
-         Esquerda()
-         time.sleep(5)
-        
-         Re()
-         time.sleep(5)
-        
-         Parar()
-         time.sleep(5)
-except KeyboardInterrupt:
-    Parar()
-    GPIO.cleanup()
+#try:
+#    while True:
+#         Frente()
+#         time.sleep(5)
+#        
+#         Direita()
+#         time.sleep(5)
+#        
+#         Esquerda()
+#         time.sleep(5)
+#        
+#         Re()
+#         time.sleep(5)
+#        
+#         Parar()
+#         time.sleep(5)
+#except KeyboardInterrupt:
+#    Parar()
+#    GPIO.cleanup()
