@@ -1,4 +1,5 @@
 import cv2
+from Controle_Rodas import ControleRodas
 
 COR_VERMELHO = (0, 0, 255)
 COR_VERDE = (0, 255, 0)
@@ -15,7 +16,7 @@ class Rastreamento_Peixe:
 
     def definir_limites_cor(self, limite_inferior, limite_superior):
         self.LIMITE_INFERIOR = limite_inferior
-        self.LIMITE_SUPERIOR = limite_superio
+        self.LIMITE_SUPERIOR = limite_superior
 
     def linearizar_frame(self, frame):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -86,21 +87,26 @@ class Rastreamento_Peixe:
             # Lógica para movimentar o carro com base na posição do peixe
             if y1 < y_central < y2:
                 if x1 < x_central < x2:
-                    print("Fique parado")
+                    #print("Fique parado")
+                    ControleRodas.Parar()
                 elif x_central >= x2:
-                    print("Ande para a esquerda")
+                    #print("Ande para a esquerda")
+                    ControleRodas.Esquerda()
                 else:  # x_central <= x1
-                    print("Ande para a direita")
+                    #print("Ande para a direita")
+                    ControleRodas.Direita()
             elif y_central >= y2:
                 if x1 < x_central < x2:
-                    print("Ande para cima")
+                    #print("Ande para cima")
+                    ControleRodas.Frente()
                 elif x_central >= x2:
                     print("Ande para cima e para a esquerda")
                 else:  # x_central <= x1
                     print("Ande para cima e para a direita")
             else:  # y_central <= y1
                 if x1 < x_central < x2:
-                    print("Ande para baixo")
+                    #print("Ande para baixo")
+                    ControleRodas.Re()
                 elif x_central >= x2:
                     print("Ande para baixo e para a esquerda")
                 else:  # x_central <= x1
