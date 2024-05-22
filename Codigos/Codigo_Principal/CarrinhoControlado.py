@@ -1,41 +1,52 @@
 import cv2
 from Rastreamento_Peixe import Rastreamento_Peixe
-from Controle_Rodas import ControleRodas
+#from Controle_Rodas import ControleRodas
 
 class CarrinhoControlado:
     def __init__(self):
         self.rastreador = Rastreamento_Peixe()
 
-    def controlar_carrinho(self, x_Central, y_Central, w_Frame, h_Frame):
+    def mover_carro(self, x_central, y_central, largura_frame, altura_frame):
+        # Defina as coordenadas dos limites para cada direção
+        x1, x2 = largura_frame // 3, 2 * largura_frame // 3
+        y1, y2 = altura_frame // 3, 2 * altura_frame // 3
+
+        # Lógica para movimentar o carro com base na posição do peixe
+        if y1 < y_central < y2:
+            if x1 < x_central < x2:
+               # ControleRodas.Parar()
+                print("Fique parado")
+            elif x_central >= x2:
+               # ControleRodas.Esquerda()
+                print("Ande para a esquerda")
+            else:  # x_central <= x1
+               # ControleRodas.Direita()
+                print("Ande para a direita")
+        elif y_central >= y2:
+            if x1 < x_central < x2:
+                print("Ande para cima")
+            elif x_central >= x2:
+                print("Ande para cima e para a esquerda")
+            else:  # x_central <= x1
+                print("Ande para cima e para a direita")
+        else:  # y_central <= y1
+            if x1 < x_central < x2:
+                print("Ande para baixo")
+            elif x_central >= x2:
+                print("Ande para baixo e para a esquerda")
+            else:  # x_central <= x1
+                print("Ande para baixo e para a direita")
+        Rastreamento_Peixe.loop(self)
+    #def controlar_carrinho(self, x_Central, y_Central, w_Frame, h_Frame):
         # Definir a lógica para controlar o carrinho com base na posição do objeto rastreado
-        if x_Central < w_Frame / 3:
-            self.Esquerda()
-        elif x_Central > 2 * w_Frame / 3:
-            self.Direita()
-        else:
-            self.Frente()
+    #    if x_Central < w_Frame / 3:
+    #        self.Esquerda()
+    #    elif x_Central > 2 * w_Frame / 3:
+    #        self.Direita()
+    #    else:
+    #        self.Frente()
 
-    def loop(self):
-        webcam = cv2.VideoCapture(0)
-        webcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        webcam.set(cv2.CAP_PROP_FPS, 30)
 
-        while True:
-            valido, frame = webcam.read()
-            if valido:
-                frame_binario = self.rastreador.linearizar_frame(frame)
-                x_Central, y_Central, w_Frame, h_Frame = self.rastreador.trancking_peixe(frame, frame_binario)
-                self.controlar_carrinho(x_Central, y_Central, w_Frame, h_Frame)
-                cv2.imshow('BINARIO', frame_binario)
-                cv2.imshow('PRINCIPAL', frame)
-                if cv2.waitKey(1) != -1:
-                    break
-            else:
-                break
-        webcam.release()
-        cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     carrinho = CarrinhoControlado()
-    carrinho.loop()
