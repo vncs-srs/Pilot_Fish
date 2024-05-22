@@ -37,14 +37,18 @@ class Rastreamento_Peixe:
                     contorno_Max_Area_Id = i
             maior_Contorno = contornos[contorno_Max_Area_Id]
             self.desenha_grade(frame)
-            self.desenha_trancking(frame, maior_Contorno)
+            self.desenha_tracking(frame, maior_Contorno)
 
-    def desenha_trancking(self, frame, contorno):
+    def rastreia_ponto(self, frame, contorno):
         hull = cv2.convexHull(contorno)
         cv2.drawContours(frame, [hull], -1, COR_AZUL, 1)
         M = cv2.moments(hull)
         x_Central = int(M["m10"] / M["m00"])
         y_Central = int(M["m01"] / M["m00"])
+        return x_Central, y_Central
+
+    def desenha_tracking(self, frame, contorno):
+        x_Central, y_Central = self.rastreia_ponto(frame, contorno)
         cv2.circle(frame, (x_Central, y_Central), 5, COR_VERMELHO, -1)
         cv2.drawContours(frame, [contorno], -1, (0, 255, 255), 1)
         texto = f"X: {x_Central}, Y: {y_Central}"
