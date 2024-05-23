@@ -10,7 +10,7 @@ if [ ! -f "$SCRIPT_PATH" ]; then
 fi
 
 # Cria o arquivo de serviço systemd
-SERVICE_FILE="/etc/systemd/system/Pilor_Fish.service"
+SERVICE_FILE="/etc/systemd/system/Pilot_Fish.service"
 echo "[Unit]
 Description=Rastreamento de peixe
 After=multi-user.target
@@ -29,9 +29,9 @@ chmod 644 $SERVICE_FILE
 systemctl daemon-reload
 
 # Habilita o serviço para iniciar automaticamente no boot
-systemctl enable Pilor_Fish.service
+systemctl enable Pilot_Fish.service
 
 # Inicia o serviço
-systemctl start Pilor_Fish.service
+systemctl start Pilot_Fish.service
 
 echo "Serviço de rastreamento de peixe configurado e iniciado com sucesso."
