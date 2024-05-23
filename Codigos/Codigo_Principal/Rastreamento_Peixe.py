@@ -90,27 +90,31 @@ class Rastreamento_Peixe:
                     #print("Fique parado")
                     ControleRodas.Parar()
                 elif x_central >= x2:
-                    #print("Ande para a esquerda")
-                    ControleRodas.Esquerda()
-                else:  # x_central <= x1
-                    #print("Ande para a direita")
-                    ControleRodas.Direita()
-            elif y_central >= y2:
-                if x1 < x_central < x2:
-                    #print("Ande para cima")
-                    ControleRodas.Frente()
-                elif x_central >= x2:
-                    print("Ande para cima e para a esquerda")
-                else:  # x_central <= x1
-                    print("Ande para cima e para a direita")
-            else:  # y_central <= y1
-                if x1 < x_central < x2:
                     #print("Ande para baixo")
                     ControleRodas.Re()
-                elif x_central >= x2:
-                    print("Ande para baixo e para a esquerda")
                 else:  # x_central <= x1
-                    print("Ande para baixo e para a direita")
+                    #print("Ande para cima")
+                    ControleRodas.Frente()
+            elif y_central >= y2:
+                if x1 < x_central < x2:
+                    #print("Ande para a direita")
+                    ControleRodas.Direita()
+                elif x_central >= x2:
+                    #print("Ande para baixo e para a direita")
+                    ControleRodas.Re_Direita()
+                else:  # x_central <= x1
+                    #print("Ande para cima e para a direita")
+                    ControleRodas.Frente_Direita
+            else:  # y_central <= y1
+                if x1 < x_central < x2:
+                    #print("Ande para a esquerda")
+                    ControleRodas.Esquerda()
+                elif x_central >= x2:
+                    #print("Ande para baixo e para a esquerda")
+                    ControleRodas.Re_Esquerda()    
+                else:  # x_central <= x1
+                    #print("Ande para cima e para a esquerda")
+                    ControleRodas.Frente_Esquerda()
 
     def calcular_centro_contorno(self, contorno):
         M = cv2.moments(contorno)
