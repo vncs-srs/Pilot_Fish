@@ -43,6 +43,26 @@ class ControleRodas:
         print("Freiando")
         motor_direito.freiar()
         motor_esquerdo.freiar()
+    
+    def Frente_Direita():
+        print("Ande para cima e para a direita")
+        motor_direito.frente()
+        motor_esquerdo.freiar()
+    
+    def Frente_Esquerda():
+        print("Ande para cima e para a esquerda")
+        motor_direito.freiar()
+        motor_esquerdo.frente()   
+    
+    def Re_Direita():
+        print("Ande para baixo e para a direita")
+        motor_direito.re()
+        motor_esquerdo.freiar()
+
+    def Re_Esquerda():
+        print("Ande para cima e para a direita")
+        motor_direito.freiar()
+        motor_esquerdo.re()
 
 #try:
 #    while True:
