@@ -1,4 +1,5 @@
 import cv2
+import time
 from Controle_Rodas import ControleRodas
 
 COR_VERMELHO = (0, 0, 255)
@@ -133,6 +134,7 @@ class Rastreamento_Peixe:
 
         while True:
             valido, frame = webcam.read()
+            time.sleep(0.5)
             if valido:
                 frame_binario = self.linearizar_frame(frame)
                 contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
