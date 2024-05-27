@@ -5,12 +5,14 @@ pino_motor_1_E = 17
 pino_motor_2_E = 27
 pino_motor_1_D = 23
 pino_motor_2_D = 24
+pino_ENA = 4
+pino_ENB = 25
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-motor_direito = Motor(pino_motor_1_D, pino_motor_2_D)
-motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E)
+motor_direito = Motor(pino_motor_1_D, pino_motor_2_D, pino_ENB)
+motor_esquerdo = Motor(pino_motor_1_E, pino_motor_2_E, pino_ENA, pino_ENA)
 
 class ControleRodas:
     def Direita():
@@ -46,22 +48,22 @@ class ControleRodas:
     def DS_Direita():
         print("Andando na diagonal superior direita")
         motor_direito.frente()
-        motor_esquerdo.re()
+        motor_esquerdo.frente_reduzido()
 
     def DS_Esquerda():
         print("Andando na diagonal superior esquerda")
-        motor_direito.re()
+        motor_direito.frente_reduzido()
         motor_esquerdo.frente()
 
     def DI_Direita():
         print("Andando na diagonal inferior direita")
-        motor_direito.re()
-        motor_esquerdo.frente()
+        motor_direito.re_reduzido()
+        motor_esquerdo.re()
 
     def DI_Esquerda():
         print("Andando na diagonal inferior esquerda")
-        motor_direito.frente()
-        motor_esquerdo.re()
+        motor_direito.re()
+        motor_esquerdo.re_reduzido
 
 #try:
 #    while True:
