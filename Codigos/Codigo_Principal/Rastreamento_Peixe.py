@@ -1,5 +1,4 @@
 import cv2
-import time
 from Controle_Rodas import ControleRodas
 
 COR_VERMELHO = (0, 0, 255)
@@ -102,20 +101,20 @@ class Rastreamento_Peixe:
                     ControleRodas.Direita()
                 elif x_central >= x2:
                     #print("Ande para baixo e para a direita")
-                    ControleRodas.Re_Direita()
+                    ControleRodas.DI_Direita()
                 else:  # x_central <= x1
                     #print("Ande para cima e para a direita")
-                    ControleRodas.Frente_Direita
+                    ControleRodas.DS_Direita
             else:  # y_central <= y1
                 if x1 < x_central < x2:
                     #print("Ande para a esquerda")
                     ControleRodas.Esquerda()
                 elif x_central >= x2:
                     #print("Ande para baixo e para a esquerda")
-                    ControleRodas.Re_Esquerda()    
+                    ControleRodas.DI_Esquerda()    
                 else:  # x_central <= x1
                     #print("Ande para cima e para a esquerda")
-                    ControleRodas.Frente_Esquerda()
+                    ControleRodas.DS_Esquerda()
 
     def calcular_centro_contorno(self, contorno):
         M = cv2.moments(contorno)
@@ -134,7 +133,6 @@ class Rastreamento_Peixe:
 
         while True:
             valido, frame = webcam.read()
-            time.sleep(0.5)
             if valido:
                 frame_binario = self.linearizar_frame(frame)
                 contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)

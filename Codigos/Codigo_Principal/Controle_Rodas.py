@@ -44,24 +44,24 @@ class ControleRodas:
         motor_direito.freiar()
         motor_esquerdo.freiar()
     
-    def Frente_Direita():
-        print("Ande para cima e para a direita")
+    def DS_Direita():
+        print("Andando na diagonal superior direita")
         motor_direito.frente()
-        motor_esquerdo.freiar()
-    
-    def Frente_Esquerda():
-        print("Ande para cima e para a esquerda")
-        motor_direito.freiar()
-        motor_esquerdo.frente()   
-    
-    def Re_Direita():
-        print("Ande para baixo e para a direita")
-        motor_direito.re()
-        motor_esquerdo.freiar()
+        motor_esquerdo.re()
 
-    def Re_Esquerda():
-        print("Ande para cima e para a direita")
-        motor_direito.freiar()
+    def DS_Esquerda():
+        print("Andando na diagonal superior esquerda")
+        motor_direito.re()
+        motor_esquerdo.frente()
+
+    def DI_Direita():
+        print("Andando na diagonal inferior direita")
+        motor_direito.re()
+        motor_esquerdo.frente()
+
+    def DI_Esquerda():
+        print("Andando na diagonal inferior esquerda")
+        motor_direito.frente()
         motor_esquerdo.re()
 
 #try:
