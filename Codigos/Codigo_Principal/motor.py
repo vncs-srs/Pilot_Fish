@@ -28,4 +28,4 @@ class Motor:
 
     def parar(self):
         GPIO.output(self.pino_1, GPIO.LOW)
-        GPIO.output(self.pino_2, GPIO.LOW)
+        GPIO.output(self.pino_2, GPIO.LOW)    
