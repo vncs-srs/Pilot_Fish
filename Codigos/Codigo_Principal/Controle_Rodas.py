@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 from motor import Motor
-import time
 
 pino_motor_1_E = 17
 pino_motor_2_E = 27
