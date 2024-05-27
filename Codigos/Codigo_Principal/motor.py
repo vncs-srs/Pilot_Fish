@@ -10,7 +10,6 @@ class Motor:
         
         GPIO.setup(self.pino_1, GPIO.OUT)
         GPIO.setup(self.pino_2, GPIO.OUT)
-        GPIO.setup(self.pwm, GPIO.OUT)
         
         GPIO.output(self.pino_1, GPIO.LOW)
         GPIO.output(self.pino_2, GPIO.LOW)
