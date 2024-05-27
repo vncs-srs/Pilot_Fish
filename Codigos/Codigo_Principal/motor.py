@@ -4,10 +4,9 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 class Motor:
-    def __init__(self, p1, p2, p3):
+    def __init__(self, p1, p2):
         self.pino_1 = p1
         self.pino_2 = p2
-        self.pwm = p3
         
         GPIO.setup(self.pino_1, GPIO.OUT)
         GPIO.setup(self.pino_2, GPIO.OUT)
