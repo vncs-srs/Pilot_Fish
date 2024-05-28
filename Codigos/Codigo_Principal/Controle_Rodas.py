@@ -47,22 +47,22 @@ class ControleRodas:
     def DS_Direita():
         print("Andando na diagonal superior direita")
         motor_direito.frente()
-        motor_esquerdo.re()
+        #motor_esquerdo.re()
 
     def DS_Esquerda():
         print("Andando na diagonal superior esquerda")
         motor_direito.re()
-        motor_esquerdo.frente()
+        #motor_esquerdo.frente()
 
     def DI_Direita():
         print("Andando na diagonal inferior direita")
         motor_direito.re()
-        motor_esquerdo.frente()
+        #motor_esquerdo.frente()
 
     def DI_Esquerda():
         print("Andando na diagonal inferior esquerda")
         motor_direito.frente()
-        motor_esquerdo.re()
+        #motor_esquerdo.re()
 
 #try:
 #    while True:

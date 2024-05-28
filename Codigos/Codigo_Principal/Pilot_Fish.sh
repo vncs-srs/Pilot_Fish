@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Caminho para o seu script Python
-SCRIPT_PATH="~/Pilot_Fish/Codigos/Codigo_Principal/Rastreamento_Peixe.py"
+SCRIPT_PATH="/home/robopeixe/Pilot_Fish/Codigos/Codigo_Principal/Rastreamento_Peixe.py"
 
 # Verifica se o arquivo Python existe
 if [ ! -f "$SCRIPT_PATH" ]; then
