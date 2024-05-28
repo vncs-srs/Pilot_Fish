@@ -1,8 +1,6 @@
 from gpiozero import DistanceSensor
 from time import sleep
 
-# Conecte o sensor ultrassônico aos pinos GPIO corretos
-# Por exemplo, TRIG ao pino 23 e ECHO ao pino 24
 sensor = DistanceSensor(echo=25, trigger=8)
 
 try:
