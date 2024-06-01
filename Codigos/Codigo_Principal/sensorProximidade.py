@@ -1,13 +1,37 @@
-from gpiozero import DistanceSensor
-from time import sleep
+import RPi.GPIO as GPIO
+import time
 
-sensor = DistanceSensor(echo=25, trigger=8)
+trig = 25
+echo = 8
 
-try:
-    while True:
-        distance = sensor.distance * 100  
-        print(f"Distancia: {distance:.2f} cm")
-        sleep(1) 
+class SensorProximidade:
+    def __init__(self, trig, echo):
+        self.trig = trig
+        self.echo = echo
+        GPIO.setup(self.trig, GPIO.OUT)
+        GPIO.setup(self.echo, GPIO.IN)
 
-except KeyboardInterrupt:
-    print("\nPrograma encerrado pelo usuario.")
+    def medir_distancia(self):
+        # Enviar um pulso de 10us
+        GPIO.output(self.trig, True)
+        time.sleep(0.00001)
+        GPIO.output(self.trig, False)
+
+        inicio_tempo = time.time()
+        fim_tempo = time.time()
+
+        # Salva o tempo de envio do pulso
+        while GPIO.input(self.echo) == 0:
+            inicio_tempo = time.time()
+
+        # Salva o tempo de recepção do pulso
+        while GPIO.input(self.echo) == 1:
+            fim_tempo = time.time()
+
+        # Calcular a diferença de tempo
+        duracao = fim_tempo - inicio_tempo
+
+        # Multiplica pela velocidade do som (34300 cm/s) e divide por 2
+        distancia = (duracao * 34300) / 2
+
+        return distancia
