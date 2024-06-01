@@ -49,7 +49,7 @@ class Rastreamento_Peixe:
             y_central = int(M["m01"] / M["m00"])
             cv2.circle(frame, (x_central, y_central), 5, COR_VERMELHO, -1)
             cv2.drawContours(frame, [contorno], -1, (0, 255, 255), 1)
-            texto = "X: {x_central}, Y: {y_central}"
+            texto = f"X: {x_central}, Y: {y_central}"
             cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
 
 #    def rastreia_ponto(self, frame, contorno):
