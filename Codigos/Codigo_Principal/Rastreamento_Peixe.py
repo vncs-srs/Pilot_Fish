@@ -76,7 +76,7 @@ class Rastreamento_Peixe:
         for i in range(1, divisoes):
             x = int(i * w_Frame / divisoes)
             cv2.line(frame, (x, 0), (x, h_Frame), COR_VERDE, 2)
-   
+            
     def mover_carro(self, frame, contorno):
         h_frame, w_frame, _ = frame.shape
         if contorno is not None:
@@ -84,9 +84,9 @@ class Rastreamento_Peixe:
             # Defina as coordenadas dos limites para cada direção
             x1, x2 = w_frame // 3, 2 * w_frame // 3
             y1, y2 = h_frame // 3, 2 * h_frame // 3
-
+            SensorProximidade(25, 8)
             # Verifique a distância do sensor de proximidade
-            distancia = self.SensorProximidade.medir_distancia()
+            distancia = SensorProximidade.medir_distancia()
             print(f"Distância medida: {distancia:.2f} cm")
 
             # Limite de proximidade em centímetros
