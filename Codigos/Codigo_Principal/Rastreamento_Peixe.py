@@ -88,7 +88,7 @@ class Rastreamento_Peixe:
             
             SensorProximidade(25, 8)
             # Verifique a distância do sensor de proximidade
-            distancia = SensorProximidade.medir_distancia()
+            distancia = self.SensorProximidade.medir_distancia()
             print(f"Distância medida: {distancia:.2f} cm")
 
             # Limite de proximidade em centímetros
