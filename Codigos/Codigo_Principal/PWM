@@ -1,0 +1,19 @@
+# PWM.py
+import RPi.GPIO as GPIO
+
+class PWM:
+    def __init__(self, pino_motor):
+        self.pino_motor = pino_motor
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.pino_motor, GPIO.OUT)
+        self.pwm = GPIO.PWM(self.pino_motor, 100)  # 100 Hz
+
+    def iniciar_pwm(self):
+        self.pwm.start(0)
+
+    def parar_pwm(self):
+        self.pwm.stop()
+
+    def alterar_velocidade(self, velocidade):
+        self.pwm.ChangeDutyCycle(velocidade)
+
