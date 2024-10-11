@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 import time
 
-
 class SensorProximidade:
     def __init__(self):
         self.trig = 25
@@ -33,3 +32,7 @@ class SensorProximidade:
         distancia = (duracao * 34300) / 2
 
         return distancia
+
+    def cleanup(self):
+        GPIO.cleanup([self.trig, self.echo])  # Limpa os pinos utilizados
+

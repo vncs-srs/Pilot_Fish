@@ -1,5 +1,5 @@
-import RPi.GPIO as GPIO
 import cv2
+import RPi.GPIO as GPIO
 from Controle_Rodas import ControleRodas
 from sensorProximidade import SensorProximidade
 
@@ -7,14 +7,13 @@ COR_VERMELHO = (0, 0, 255)
 COR_VERDE = (0, 255, 0)
 COR_AZUL = (255, 0, 0)
 
-
 class Rastreamento_Peixe:
-
     def __init__(self):
         self.kernel_size = (5, 5)
         self.epsilon_multiplicador = 0.001
         self.LIMITE_INFERIOR = (90, 50, 50)
         self.LIMITE_SUPERIOR = (130, 255, 255)
+        self.sensor_proximidade = SensorProximidade()
 
     def definir_limites_cor(self, limite_inferior, limite_superior):
         self.LIMITE_INFERIOR = limite_inferior
@@ -53,21 +52,6 @@ class Rastreamento_Peixe:
             texto = f"X: {x_central}, Y: {y_central}"
             cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
 
-#    def rastreia_ponto(self, frame, contorno):
-#        hull = cv2.convexHull(contorno)
-#        cv2.drawContours(frame, [hull], -1, COR_AZUL, 1)
-#        M = cv2.moments(hull)
-#        x_Central = int(M["m10"] / M["m00"])
-#        y_Central = int(M["m01"] / M["m00"])
-#        return x_Central, y_Central
-#
-#    def desenha_tracking(self, frame, contorno):
-#        x_Central, y_Central = self.rastreia_ponto(frame, contorno)
-#        cv2.circle(frame, (x_Central, y_Central), 5, COR_VERMELHO, -1)
-#        cv2.drawContours(frame, [contorno], -1, (0, 255, 255), 1)
-#        texto = f"X: {x_Central}, Y: {y_Central}"
-#        cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
-        
     def desenha_grade(self, frame):
         h_Frame, w_Frame, _ = frame.shape
         divisoes = 3
@@ -87,7 +71,7 @@ class Rastreamento_Peixe:
             y1, y2 = h_frame // 3, 2 * h_frame // 3
             
             # Verifique a distância do sensor de proximidade
-            distancia = self.SensorProximidade.medir_distancia()
+            distancia = self.sensor_proximidade.medir_distancia()
             print(f"Distância medida: {distancia:.2f} cm")
 
             # Limite de proximidade em centímetros
@@ -100,74 +84,25 @@ class Rastreamento_Peixe:
                 # Lógica para movimentar o carro com base na posição do peixe
                 if y1 < y_central < y2:
                     if x1 < x_central < x2:
-                        #print("Fique parado")
                         ControleRodas.Parar()
                     elif x_central >= x2:
-                        #print("Ande para baixo")
-                        ControleRodas.Re()
+                        ControleRodas.DI_Esquerda()  # Mover diagonal esquerda para frente
                     else:  # x_central <= x1
-                        #print("Ande para cima")
-                        ControleRodas.Frente()
+                        ControleRodas.DS_Direita()  # Mover diagonal direita para frente
                 elif y_central >= y2:
                     if x1 < x_central < x2:
-                        #print("Ande para a direita")
-                        ControleRodas.Direita()
+                        ControleRodas.Frente()
                     elif x_central >= x2:
-                        #print("Ande para baixo e para a direita")
                         ControleRodas.DI_Direita()
                     else:  # x_central <= x1
-                        #print("Ande para cima e para a direita")
-                        ControleRodas.DS_Direita
+                        ControleRodas.DS_Direita()
                 else:  # y_central <= y1
                     if x1 < x_central < x2:
-                        #print("Ande para a esquerda")
-                        ControleRodas.Esquerda()
+                        ControleRodas.Re()
                     elif x_central >= x2:
-                        #print("Ande para baixo e para a esquerda")
-                        ControleRodas.DI_Esquerda()    
+                        ControleRodas.DI_Esquerda()
                     else:  # x_central <= x1
-                        #print("Ande para cima e para a esquerda")
                         ControleRodas.DS_Esquerda()
-                        
-    def mover_carro2(self, frame, contorno):
-        h_frame, w_frame, _ = frame.shape
-        if contorno is not None:
-            x_central, y_central = self.calcular_centro_contorno(contorno)
-            # Defina as coordenadas dos limites para cada direção
-            x1, x2 = w_frame // 3, 2 * w_frame // 3
-            y1, y2 = h_frame // 3, 2 * h_frame // 3
-
-            # Lógica para movimentar o carro com base na posição do peixe
-            if y1 < y_central < y2:
-                if x1 < x_central < x2:
-                    #print("Fique parado")
-                    ControleRodas.Parar()
-                elif x_central >= x2:
-                    #print("Ande para baixo")
-                    ControleRodas.Re()
-                else:  # x_central <= x1
-                    #print("Ande para cima")
-                    ControleRodas.Frente()
-            elif y_central >= y2:
-                if x1 < x_central < x2:
-                    #print("Ande para a direita")
-                    ControleRodas.Direita()
-                elif x_central >= x2:
-                    #print("Ande para baixo e para a direita")
-                    ControleRodas.DI_Direita()
-                else:  # x_central <= x1
-                    #print("Ande para cima e para a direita")
-                    ControleRodas.DS_Direita
-            else:  # y_central <= y1
-                if x1 < x_central < x2:
-                    #print("Ande para a esquerda")
-                    ControleRodas.Esquerda()
-                elif x_central >= x2:
-                    #print("Ande para baixo e para a esquerda")
-                    ControleRodas.DI_Esquerda()    
-                else:  # x_central <= x1
-                    #print("Ande para cima e para a esquerda")
-                    ControleRodas.DS_Esquerda()
 
     def calcular_centro_contorno(self, contorno):
         M = cv2.moments(contorno)
@@ -205,3 +140,4 @@ class Rastreamento_Peixe:
 if __name__ == '__main__':
     tracker = Rastreamento_Peixe()
     tracker.loop()
+
