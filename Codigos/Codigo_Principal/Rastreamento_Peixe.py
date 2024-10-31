@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import cv2
 from Controle_Rodas import ControleRodas
-from sensorProximidade import SensorProximidade
+#from sensorProximidade import SensorProximidade
 
 COR_VERMELHO = (0, 0, 255)
 COR_VERDE = (0, 255, 0)
@@ -78,58 +78,58 @@ class Rastreamento_Peixe:
             x = int(i * w_Frame / divisoes)
             cv2.line(frame, (x, 0), (x, h_Frame), COR_VERDE, 2)
 
-    def mover_carro(self, frame, contorno):
-        h_frame, w_frame, _ = frame.shape
-        if contorno is not None:
-            x_central, y_central = self.calcular_centro_contorno(contorno)
-            # Defina as coordenadas dos limites para cada direção
-            x1, x2 = w_frame // 3, 2 * w_frame // 3
-            y1, y2 = h_frame // 3, 2 * h_frame // 3
-            
-            # Verifique a distância do sensor de proximidade
-            distancia = self.SensorProximidade.medir_distancia()
-            print(f"Distância medida: {distancia:.2f} cm")
-
-            # Limite de proximidade em centímetros
-            limite_proximidade = 30
-
-            if distancia < limite_proximidade:
-                print("Muito próximo de um obstáculo, parando.")
-                ControleRodas.Parar()
-            else:
-                # Lógica para movimentar o carro com base na posição do peixe
-                if y1 < y_central < y2:
-                    if x1 < x_central < x2:
-                        #print("Fique parado")
-                        ControleRodas.Parar()
-                    elif x_central >= x2:
-                        #print("Ande para baixo")
-                        ControleRodas.Re()
-                    else:  # x_central <= x1
-                        #print("Ande para cima")
-                        ControleRodas.Frente()
-                elif y_central >= y2:
-                    if x1 < x_central < x2:
-                        #print("Ande para a direita")
-                        ControleRodas.Direita()
-                    elif x_central >= x2:
-                        #print("Ande para baixo e para a direita")
-                        ControleRodas.DI_Direita()
-                    else:  # x_central <= x1
-                        #print("Ande para cima e para a direita")
-                        ControleRodas.DS_Direita
-                else:  # y_central <= y1
-                    if x1 < x_central < x2:
-                        #print("Ande para a esquerda")
-                        ControleRodas.Esquerda()
-                    elif x_central >= x2:
-                        #print("Ande para baixo e para a esquerda")
-                        ControleRodas.DI_Esquerda()    
-                    else:  # x_central <= x1
-                        #print("Ande para cima e para a esquerda")
-                        ControleRodas.DS_Esquerda()
+#    def mover_carro2(self, frame, contorno):
+#        h_frame, w_frame, _ = frame.shape
+#        if contorno is not None:
+#            x_central, y_central = self.calcular_centro_contorno(contorno)
+#            # Defina as coordenadas dos limites para cada direção
+#            x1, x2 = w_frame // 3, 2 * w_frame // 3
+#            y1, y2 = h_frame // 3, 2 * h_frame // 3
+#            
+#            # Verifique a distância do sensor de proximidade
+#            distancia = self.SensorProximidade.medir_distancia()
+#            print(f"Distância medida: {distancia:.2f} cm")
+#
+#            # Limite de proximidade em centímetros
+#            limite_proximidade = 30
+#
+#            if distancia < limite_proximidade:
+#                print("Muito próximo de um obstáculo, parando.")
+#                ControleRodas.Parar()
+#            else:
+#                # Lógica para movimentar o carro com base na posição do peixe
+#                if y1 < y_central < y2:
+#                    if x1 < x_central < x2:
+#                        #print("Fique parado")
+#                        ControleRodas.Parar()
+#                    elif x_central >= x2:
+#                        #print("Ande para baixo")
+#                        ControleRodas.Re()
+#                    else:  # x_central <= x1
+#                        #print("Ande para cima")
+#                        ControleRodas.Frente()
+#                elif y_central >= y2:
+#                    if x1 < x_central < x2:
+#                        #print("Ande para a direita")
+#                        ControleRodas.Direita()
+#                    elif x_central >= x2:
+#                        #print("Ande para baixo e para a direita")
+#                        ControleRodas.DI_Direita()
+#                    else:  # x_central <= x1
+#                        #print("Ande para cima e para a direita")
+#                        ControleRodas.DS_Direita
+#                else:  # y_central <= y1
+#                    if x1 < x_central < x2:
+#                        #print("Ande para a esquerda")
+#                        ControleRodas.Esquerda()
+#                    elif x_central >= x2:
+#                        #print("Ande para baixo e para a esquerda")
+#                        ControleRodas.DI_Esquerda()    
+#                    else:  # x_central <= x1
+#                        #print("Ande para cima e para a esquerda")
+#                        ControleRodas.DS_Esquerda()
                         
-    def mover_carro2(self, frame, contorno):
+    def mover_carro(self, frame, contorno):
         h_frame, w_frame, _ = frame.shape
         if contorno is not None:
             x_central, y_central = self.calcular_centro_contorno(contorno)
