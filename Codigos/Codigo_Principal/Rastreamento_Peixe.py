@@ -1,8 +1,7 @@
 import RPi.GPIO as GPIO
 import cv2
-import numpy as np
 from Controle_Rodas import ControleRodas
-# from sensorProximidade import SensorProximidade
+#from sensorProximidade import SensorProximidade
 
 COR_VERMELHO = (0, 0, 255)
 COR_VERDE = (0, 255, 0)
@@ -179,14 +178,7 @@ class Rastreamento_Peixe:
             return None
 
     def loop(self):
-        # Inicialize a captura de vídeo com o backend V4L2
-        webcam = cv2.VideoCapture(0, cv2.CAP_V4L2)
-
-        if not webcam.isOpened():
-            print("Erro ao abrir a câmera")
-            return
-
-        # Defina as propriedades da câmera
+        webcam = cv2.VideoCapture(0)
         webcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         webcam.set(cv2.CAP_PROP_FPS, 30)
