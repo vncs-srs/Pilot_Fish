@@ -1,8 +1,6 @@
 import RPi.GPIO as GPIO
 import cv2
 import numpy as np
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 from Controle_Rodas import ControleRodas
 # from sensorProximidade import SensorProximidade
 
@@ -17,11 +15,6 @@ class Rastreamento_Peixe:
         self.epsilon_multiplicador = 0.001
         self.LIMITE_INFERIOR = (90, 50, 50)
         self.LIMITE_SUPERIOR = (130, 255, 255)
-        # Inicialize a câmera
-        self.camera = PiCamera()
-        self.camera.resolution = (640, 480)
-        self.camera.framerate = 30
-        self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
 
     def definir_limites_cor(self, limite_inferior, limite_superior):
         self.LIMITE_INFERIOR = limite_inferior
@@ -186,21 +179,33 @@ class Rastreamento_Peixe:
             return None
 
     def loop(self):
-        # Capture imagens da câmera usando Pycamera
-        for frame_pi in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            frame = frame_pi.array
-            frame_binario = self.linearizar_frame(frame)
-            contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-            contorno_principal = max(contornos, key=self.calcular_area_contorno) if contornos else None
-            self.mover_carro(frame, contorno_principal)
-            self.tracking_peixe(frame, frame_binario)
-            cv2.imshow('BINARIO', frame_binario)
-            cv2.imshow('PRINCIPAL', frame)
-            key = cv2.waitKey(1) & 0xFF
-            self.rawCapture.truncate(0)
-            if key != -1:
+        # Inicialize a captura de vídeo com o backend V4L2
+        webcam = cv2.VideoCapture(0, cv2.CAP_V4L2)
+
+        if not webcam.isOpened():
+            print("Erro ao abrir a câmera")
+            return
+
+        # Defina as propriedades da câmera
+        webcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        webcam.set(cv2.CAP_PROP_FPS, 30)
+
+        while True:
+            valido, frame = webcam.read()
+            if valido:
+                frame_binario = self.linearizar_frame(frame)
+                contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+                contorno_principal = max(contornos, key=self.calcular_area_contorno) if contornos else None
+                self.mover_carro(frame, contorno_principal)
+                self.tracking_peixe(frame, frame_binario)
+                cv2.imshow('BINARIO', frame_binario)
+                cv2.imshow('PRINCIPAL', frame)
+                if cv2.waitKey(1) != -1:
+                    break
+            else:
                 break
-        self.camera.close()
+        webcam.release()
         cv2.destroyAllWindows()
         GPIO.cleanup()
 
