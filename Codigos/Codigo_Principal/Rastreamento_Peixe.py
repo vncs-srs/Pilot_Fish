@@ -1,6 +1,7 @@
-import RPi.GPIO as GPIO
-import cv2
-import Picamera2
+#import RPi.GPIO as GPIO
+import cv2 
+import time
+from picamera2 import Picamera2
 from Controle_Rodas import ControleRodas
 #from sensorProximidade import SensorProximidade
 
@@ -74,34 +75,34 @@ class Rastreamento_Peixe:
             # Lógica para movimentar o carro com base na posição do peixe
             if y1 < y_central < y2:
                 if x1 < x_central < x2:
-                    #print("Fique parado")
-                    ControleRodas.Parar()
+                    print("Fique parado")
+                    #ControleRodas.Parar()
                 elif x_central >= x2:
-                    #print("Ande para baixo")
-                    ControleRodas.Re()
+                    print("Ande para baixo")
+                    #ControleRodas.Re()
                 else:  # x_central <= x1
-                    #print("Ande para cima")
-                    ControleRodas.Frente()
+                    print("Ande para cima")
+                    #ControleRodas.Frente()
             elif y_central >= y2:
                 if x1 < x_central < x2:
-                    #print("Ande para a direita")
-                    ControleRodas.Direita()
+                    print("Ande para a direita")
+                    #ControleRodas.Direita()
                 elif x_central >= x2:
-                    #print("Ande para baixo e para a direita")
-                    ControleRodas.DI_Direita()
+                    print("Ande para baixo e para a direita")
+                    #ControleRodas.DI_Direita()
                 else:  # x_central <= x1
-                    #print("Ande para cima e para a direita")
-                    ControleRodas.DS_Direita
+                    print("Ande para cima e para a direita")
+                    #ControleRodas.DS_Direita
             else:  # y_central <= y1
                 if x1 < x_central < x2:
-                    #print("Ande para a esquerda")
-                    ControleRodas.Esquerda()
+                    print("Ande para a esquerda")
+                    #ControleRodas.Esquerda()
                 elif x_central >= x2:
-                    #print("Ande para baixo e para a esquerda")
-                    ControleRodas.DI_Esquerda()    
+                    print("Ande para baixo e para a esquerda")
+                    #ControleRodas.DI_Esquerda()    
                 else:  # x_central <= x1
-                    #print("Ande para cima e para a esquerda")
-                    ControleRodas.DS_Esquerda()
+                    print("Ande para cima e para a esquerda")
+                    #ControleRodas.DS_Esquerda()
 
     def calcular_centro_contorno(self, contorno):
         M = cv2.moments(contorno)
@@ -151,7 +152,7 @@ class Rastreamento_Peixe:
         # webcam.release()
         picam2.stop()
         cv2.destroyAllWindows()
-        GPIO.cleanup()
+        #GPIO.cleanup()
 
 if __name__ == '__main__':
     tracker = Rastreamento_Peixe()
