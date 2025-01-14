@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import cv2
+import Picamera2
 from Controle_Rodas import ControleRodas
 #from sensorProximidade import SensorProximidade
 
@@ -52,21 +53,6 @@ class Rastreamento_Peixe:
             texto = f"X: {x_central}, Y: {y_central}"
             cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
 
-#    def rastreia_ponto(self, frame, contorno):
-#        hull = cv2.convexHull(contorno)
-#        cv2.drawContours(frame, [hull], -1, COR_AZUL, 1)
-#        M = cv2.moments(hull)
-#        x_Central = int(M["m10"] / M["m00"])
-#        y_Central = int(M["m01"] / M["m00"])
-#        return x_Central, y_Central
-#
-#    def desenha_tracking(self, frame, contorno):
-#        x_Central, y_Central = self.rastreia_ponto(frame, contorno)
-#        cv2.circle(frame, (x_Central, y_Central), 5, COR_VERMELHO, -1)
-#        cv2.drawContours(frame, [contorno], -1, (0, 255, 255), 1)
-#        texto = f"X: {x_Central}, Y: {y_Central}"
-#        cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
-        
     def desenha_grade(self, frame):
         h_Frame, w_Frame, _ = frame.shape
         divisoes = 3
@@ -76,57 +62,6 @@ class Rastreamento_Peixe:
         for i in range(1, divisoes):
             x = int(i * w_Frame / divisoes)
             cv2.line(frame, (x, 0), (x, h_Frame), COR_VERDE, 2)
-
-#    def mover_carro2(self, frame, contorno):
-#        h_frame, w_frame, _ = frame.shape
-#        if contorno is not None:
-#            x_central, y_central = self.calcular_centro_contorno(contorno)
-#            # Defina as coordenadas dos limites para cada direção
-#            x1, x2 = w_frame // 3, 2 * w_frame // 3
-#            y1, y2 = h_frame // 3, 2 * h_frame // 3
-#            
-#            # Verifique a distância do sensor de proximidade
-#            distancia = self.SensorProximidade.medir_distancia()
-#            print(f"Distância medida: {distancia:.2f} cm")
-#
-#            # Limite de proximidade em centímetros
-#            limite_proximidade = 30
-#
-#            if distancia < limite_proximidade:
-#                print("Muito próximo de um obstáculo, parando.")
-#                ControleRodas.Parar()
-#            else:
-#                # Lógica para movimentar o carro com base na posição do peixe
-#                if y1 < y_central < y2:
-#                    if x1 < x_central < x2:
-#                        #print("Fique parado")
-#                        ControleRodas.Parar()
-#                    elif x_central >= x2:
-#                        #print("Ande para baixo")
-#                        ControleRodas.Re()
-#                    else:  # x_central <= x1
-#                        #print("Ande para cima")
-#                        ControleRodas.Frente()
-#                elif y_central >= y2:
-#                    if x1 < x_central < x2:
-#                        #print("Ande para a direita")
-#                        ControleRodas.Direita()
-#                    elif x_central >= x2:
-#                        #print("Ande para baixo e para a direita")
-#                        ControleRodas.DI_Direita()
-#                    else:  # x_central <= x1
-#                        #print("Ande para cima e para a direita")
-#                        ControleRodas.DS_Direita
-#                else:  # y_central <= y1
-#                    if x1 < x_central < x2:
-#                        #print("Ande para a esquerda")
-#                        ControleRodas.Esquerda()
-#                    elif x_central >= x2:
-#                        #print("Ande para baixo e para a esquerda")
-#                        ControleRodas.DI_Esquerda()    
-#                    else:  # x_central <= x1
-#                        #print("Ande para cima e para a esquerda")
-#                        ControleRodas.DS_Esquerda()
                         
     def mover_carro(self, frame, contorno):
         h_frame, w_frame, _ = frame.shape
@@ -178,13 +113,29 @@ class Rastreamento_Peixe:
             return None
 
     def loop(self):
-        webcam = cv2.VideoCapture(11)
-        webcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        webcam.set(cv2.CAP_PROP_FPS, 30)
+        #webcam = cv2.VideoCapture(21)
+        #print(webcam.isOpened())
+        #webcam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        #webcam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        #webcam.set(cv2.CAP_PROP_FPS, 30)
+
+        picam2 = Picamera2()
+        picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))        
+        # picam2.video_configuration.size = (640, 480)
+        # picam2.set_controls({'ColourGains': (0.522, 1.897)})
+        picam2.start()
+        
+        
+        #time.sleep(1)
+        #picam2.set_controls({"FrameRate": 15.0})
+        # And wait for those settings to take effect
+        #time.sleep(1)
 
         while True:
-            valido, frame = webcam.read()
+            # valido, frame = webcam.read()
+            time.sleep(0.5) 
+            valido = True # Verificar se tem algua propriedade da picam2 que retorna algo como a propriedade valido usada na variavel webcam da linha anterior
+            frame = picam2.capture_array()
             if valido:
                 frame_binario = self.linearizar_frame(frame)
                 contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
@@ -197,7 +148,8 @@ class Rastreamento_Peixe:
                     break
             else:
                 break
-        webcam.release()
+        # webcam.release()
+        picam2.stop()
         cv2.destroyAllWindows()
         GPIO.cleanup()
 
