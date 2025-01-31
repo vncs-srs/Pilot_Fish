@@ -1,7 +1,6 @@
 import RPi.GPIO as GPIO
 import time
 
-
 class SensorProximidade:
     def __init__(self):
         self.trig = 6

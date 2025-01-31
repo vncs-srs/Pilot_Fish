@@ -16,6 +16,7 @@ class Rastreamento_Peixe:
         self.epsilon_multiplicador = 0.001
         self.LIMITE_INFERIOR = (90, 50, 50)
         self.LIMITE_SUPERIOR = (130, 255, 255)
+        self.SensorProximidade = SensorProximidade()
 
     def definir_limites_cor(self, limite_inferior, limite_superior):
         self.LIMITE_INFERIOR = limite_inferior
@@ -73,9 +74,7 @@ class Rastreamento_Peixe:
             y1, y2 = h_frame // 3, 2 * h_frame // 3
             
             # Verifique a distância do sensor de proximidade
-            #BRENO: Comentei o sensor e defini uma distancia padrao
             distancia = self.SensorProximidade.medir_distancia()
-            #distancia = 50.00
             print(f"Distância medida: {distancia:.2f} cm")
 
             # Limite de proximidade em centímetros
