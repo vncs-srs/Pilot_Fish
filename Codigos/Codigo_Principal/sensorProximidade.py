@@ -2,18 +2,14 @@ import RPi.GPIO as GPIO
 import time
 
 class SensorProximidade:
-    def __init__(self, trig, echo):
-        self.trig = trig
-        self.echo = echo
-        
-        # Configuração dos pinos
+    def __init__(self):
+        self.trig = 6
+        self.echo = 5
         GPIO.setup(self.trig, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
-        GPIO.output(self.trig, False)
-        time.sleep(0.1)  # Pequena pausa para estabilizar
 
     def medir_distancia(self):
-        # Enviar um pulso de 10µs para ativar o sensor
+        # Enviar um pulso de 10us
         GPIO.output(self.trig, True)
         time.sleep(0.00001)
         GPIO.output(self.trig, False)
@@ -21,18 +17,18 @@ class SensorProximidade:
         inicio_tempo = time.time()
         fim_tempo = time.time()
 
-        # Espera o ECHO ficar alto
+        # Salva o tempo de envio do pulso
         while GPIO.input(self.echo) == 0:
             inicio_tempo = time.time()
 
-        # Espera o ECHO ficar baixo
+        # Salva o tempo de recepção do pulso
         while GPIO.input(self.echo) == 1:
             fim_tempo = time.time()
 
-        # Calcula a diferença de tempo
+        # Calcular a diferença de tempo
         duracao = fim_tempo - inicio_tempo
 
-        # Converte para distância em cm (velocidade do som = 34300 cm/s)
+        # Multiplica pela velocidade do som (34300 cm/s) e divide por 2
         distancia = (duracao * 34300) / 2
 
         return distancia
