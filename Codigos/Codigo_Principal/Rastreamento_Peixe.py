@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import cv2
 from Controle_Rodas import ControleRodas
 from sensorProximidade import SensorProximidade 
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2
 import time
 
 COR_VERMELHO = (0, 0, 255)
@@ -16,7 +16,12 @@ class Rastreamento_Peixe:
         self.epsilon_multiplicador = 0.001
         self.LIMITE_INFERIOR = (90, 50, 50)
         self.LIMITE_SUPERIOR = (130, 255, 255)
-        self.SensorProximidade = SensorProximidade()
+        
+        # Criando os sensores de proximidade
+        self.SensorProximidade1 = SensorProximidade(trig=6, echo=5)  # Sensor 1
+        self.SensorProximidade2 = SensorProximidade(trig=20, echo=21)  # Sensor 2 (Novo)
+
+        self.ControleRodas = ControleRodas()
 
     def definir_limites_cor(self, limite_inferior, limite_superior):
         self.LIMITE_INFERIOR = limite_inferior
@@ -24,14 +29,13 @@ class Rastreamento_Peixe:
 
     def linearizar_frame(self, frame):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        black_mask = cv2.inRange(hsv, self.LIMITE_INFERIOR, self.LIMITE_SUPERIOR)
-        black_result = cv2.bitwise_and(frame, frame, mask=black_mask)
+        mask = cv2.inRange(hsv, self.LIMITE_INFERIOR, self.LIMITE_SUPERIOR)
+        black_result = cv2.bitwise_and(frame, frame, mask=mask)
         gray_frame = cv2.cvtColor(black_result, cv2.COLOR_BGR2GRAY)
         gaus_frame = cv2.GaussianBlur(gray_frame, self.kernel_size, 0)
         _, frame_binario = cv2.threshold(gaus_frame, 0, 255, cv2.THRESH_BINARY)
         pixel_preenchimento = cv2.getStructuringElement(cv2.MORPH_CROSS, self.kernel_size)
-        frame = cv2.morphologyEx(frame_binario, cv2.MORPH_CLOSE, pixel_preenchimento)
-        return frame
+        return cv2.morphologyEx(frame_binario, cv2.MORPH_CLOSE, pixel_preenchimento)
 
     def calcular_area_contorno(self, contorno):
         return cv2.contourArea(contorno)
@@ -54,87 +58,65 @@ class Rastreamento_Peixe:
             cv2.drawContours(frame, [contorno], -1, (0, 255, 255), 1)
             texto = f"X: {x_central}, Y: {y_central}"
             cv2.putText(frame, texto, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1)
- 
+
     def desenha_grade(self, frame):
-        h_Frame, w_Frame, _ = frame.shape
-        divisoes = 3
-        for i in range(1, divisoes):
-            y = int(i * h_Frame / divisoes)
-            cv2.line(frame, (0, y), (w_Frame, y), COR_VERDE, 2)
-        for i in range(1, divisoes):
-            x = int(i * w_Frame / divisoes)
-            cv2.line(frame, (x, 0), (x, h_Frame), COR_VERDE, 2)
+        h, w, _ = frame.shape
+        for i in range(1, 3):
+            cv2.line(frame, (0, h * i // 3), (w, h * i // 3), COR_VERDE, 2)
+            cv2.line(frame, (w * i // 3, 0), (w * i // 3, h), COR_VERDE, 2)
 
     def mover_carro(self, frame, contorno):
-        h_frame, w_frame, _ = frame.shape
+        h, w, _ = frame.shape
         if contorno is not None:
             x_central, y_central = self.calcular_centro_contorno(contorno)
-            # Defina as coordenadas dos limites para cada direção
-            x1, x2 = w_frame // 3, 2 * w_frame // 3
-            y1, y2 = h_frame // 3, 2 * h_frame // 3
-            
-            # Verifique a distância do sensor de proximidade
-            distancia = self.SensorProximidade.medir_distancia()
-            print(f"Distância medida: {distancia:.2f} cm")
+            x1, x2 = w // 3, 2 * w // 3
+            y1, y2 = h // 3, 2 * h // 3
 
-            # Limite de proximidade em centímetros
-            limite_proximidade = 30
+            # Verificando a distância dos dois sensores
+            distancia1 = self.SensorProximidade1.medir_distancia()
+            distancia2 = self.SensorProximidade2.medir_distancia()
+            print(f"Distância Sensor 1: {distancia1:.2f} cm | Distância Sensor 2: {distancia2:.2f} cm")
 
-            if distancia < limite_proximidade:
-                print("Muito próximo de um obstáculo, parando.")
-                ControleRodas.Parar()
+            if distancia1 < 30 or distancia2 < 30:
+                print("Obstáculo detectado! Parando.")
+                self.ControleRodas.Parar()
             else:
-                # Lógica para movimentar o carro com base na posição do peixe
                 if y1 < y_central < y2:
                     if x1 < x_central < x2:
-                        #print("Fique parado")
-                        ControleRodas.Parar()
+                        self.ControleRodas.Parar()
                     elif x_central >= x2:
-                        #print("Ande para baixo")
-                        ControleRodas.Re()
-                    else:  # x_central <= x1
-                        #print("Ande para cima")
-                        ControleRodas.Frente()
+                        self.ControleRodas.Re()
+                    else:
+                        self.ControleRodas.Frente()
                 elif y_central >= y2:
                     if x1 < x_central < x2:
-                        #print("Ande para a direita")
-                        ControleRodas.Direita()
+                        self.ControleRodas.Direita()
                     elif x_central >= x2:
-                        #print("Ande para baixo e para a direita")
-                        ControleRodas.DI_Direita()
-                    else:  # x_central <= x1
-                        #print("Ande para cima e para a direita")
-                        ControleRodas.DS_Direita
-                else:  # y_central <= y1
+                        self.ControleRodas.DI_Direita()
+                    else:
+                        self.ControleRodas.DS_Direita()
+                else:
                     if x1 < x_central < x2:
-                        #print("Ande para a esquerda")
-                        ControleRodas.Esquerda()
+                        self.ControleRodas.Esquerda()
                     elif x_central >= x2:
-                        #print("Ande para baixo e para a esquerda")
-                        ControleRodas.DI_Esquerda()    
-                    else:  # x_central <= x1
-                        #print("Ande para cima e para a esquerda")
-                        ControleRodas.DS_Esquerda()
-                        
+                        self.ControleRodas.DI_Esquerda()    
+                    else:
+                        self.ControleRodas.DS_Esquerda()
+
     def calcular_centro_contorno(self, contorno):
         M = cv2.moments(contorno)
         if M["m00"] != 0:
-            x_central = int(M["m10"] / M["m00"])
-            y_central = int(M["m01"] / M["m00"])
-            return x_central, y_central
-        else:
-            return None
+            return int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"])
+        return None
 
     def loop(self):
         picam2 = Picamera2()
         picam2.configure(picam2.create_preview_configuration(main={"format":'XRGB8888', "size":(640,480)}))
         picam2.start()
 
-        while True:
-            #time.sleep(0.5)
-            valido = True
-            frame = picam2.capture_array()
-            if valido:
+        try:
+            while True:
+                frame = picam2.capture_array()
                 frame_binario = self.linearizar_frame(frame)
                 contornos, _ = cv2.findContours(frame_binario, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
                 contorno_principal = max(contornos, key=self.calcular_area_contorno) if contornos else None
@@ -142,13 +124,14 @@ class Rastreamento_Peixe:
                 self.tracking_peixe(frame, frame_binario)
                 cv2.imshow('BINARIO', frame_binario)
                 cv2.imshow('PRINCIPAL', frame)
-                if cv2.waitKey(1) != -1:
+                if cv2.waitKey(1) == ord('q'):
                     break
-            else:
-                break
-        picam2.stop()
-        cv2.destroyAllWindows()
-        GPIO.cleanup()
+        except KeyboardInterrupt:
+            print("\nInterrompido pelo usuário. Encerrando...")
+        finally:
+            picam2.stop()
+            cv2.destroyAllWindows()
+            GPIO.cleanup()
 
 if __name__ == '__main__':
     tracker = Rastreamento_Peixe()

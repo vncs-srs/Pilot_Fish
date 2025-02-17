@@ -3,8 +3,8 @@ import time
 
 class SensorProximidade:
     def __init__(self):
-        self.trig = 6
-        self.echo = 5
+        #self.trig = 6
+        #self.echo = 5
         GPIO.setup(self.trig, GPIO.OUT)
         GPIO.setup(self.echo, GPIO.IN)
 
